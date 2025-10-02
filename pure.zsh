@@ -465,7 +465,7 @@ prompt_pure_async_refresh() {
 	async_job "prompt_pure" prompt_pure_async_git_arrows
 
 	# Do not perform `git fetch` if it is disabled or in home folder.
-	if (( ${PURE_GIT_PULL:-1} )) && [[ $prompt_pure_vcs_info[top] != $HOME ]]; then
+	if (( ${PURE_GIT_PULL:-0} )) && [[ $prompt_pure_vcs_info[top] != $HOME ]]; then
 		zstyle -t :prompt:pure:git:fetch only_upstream
 		local only_upstream=$((? == 0))
 		async_job "prompt_pure" prompt_pure_async_git_fetch $only_upstream
@@ -477,11 +477,12 @@ prompt_pure_async_refresh() {
 	if (( time_since_last_dirty_check > ${PURE_GIT_DELAY_DIRTY_CHECK:-1800} )); then
 		unset prompt_pure_git_last_dirty_check_timestamp
 		# Check check if there is anything to pull.
-		async_job "prompt_pure" prompt_pure_async_git_dirty ${PURE_GIT_UNTRACKED_DIRTY:-1}
+		async_job "prompt_pure" prompt_pure_async_git_dirty ${PURE_GIT_UNTRACKED_DIRTY:-0}
 	fi
 
 	# If stash is enabled, tell async worker to count stashes
-	if zstyle -t ":prompt:pure:git:stash" show; then
+	# Hack: force-enable stash status
+	if true || zstyle -t ":prompt:pure:git:stash" show; then
 		async_job "prompt_pure" prompt_pure_async_git_stash
 	else
 		unset prompt_pure_git_stash
