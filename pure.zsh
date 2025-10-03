@@ -818,24 +818,25 @@ prompt_pure_setup() {
 	autoload -Uz +X add-zle-hook-widget 2>/dev/null
 
 	# Set the colors.
+	# Color chart: https://upload.wikimedia.org/wikipedia/commons/1/15/Xterm_256color_chart.svg
 	typeset -gA prompt_pure_colors_default prompt_pure_colors
 	prompt_pure_colors_default=(
-		execution_time       yellow
-		git:arrow            cyan
-		git:stash            cyan
-		git:branch           242
-		git:branch:cached    red
-		git:action           yellow
-		git:dirty            218
-		host                 242
-		path                 blue
-		prompt:error         red
-		prompt:success       magenta
-		prompt:continuation  242
-		suspended_jobs       red
-		user                 242
+		execution_time       011 # yellow
+		git:arrow            045 # cyan
+		git:stash            208 # orange
+		git:branch           013 # purple
+		git:branch:cached    009 # red
+		git:action           011 # yellow
+		git:dirty            011 # yellow
+		host                 248
+		path                 012 # blue
+		prompt:error         009 # red
+		prompt:success       010 # green
+		prompt:continuation  248
+		suspended_jobs       009 # red
+		user                 248
 		user:root            default
-		virtualenv           242
+		virtualenv           248
 	)
 	prompt_pure_colors=("${(@kv)prompt_pure_colors_default}")
 
