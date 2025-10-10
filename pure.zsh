@@ -290,6 +290,14 @@ prompt_pure_async_vcs_info() {
 	info[top]=$vcs_info_msg_1_
 	info[action]=$vcs_info_msg_2_
 
+	# Append tracked remote branch if exists
+	if [[ -n $info[top] ]]; then
+		local upstream=$(command git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null)
+		if [[ -n $upstream ]]; then
+			info[branch]+=" [$upstream]"
+		fi
+	fi
+
 	print -r - ${(@kvq)info}
 }
 
