@@ -145,7 +145,7 @@ prompt_pure_preprompt_render() {
 	# Git branch and dirty status info.
 	typeset -gA prompt_pure_vcs_info
 	if [[ -n $prompt_pure_vcs_info[branch] ]]; then
-		preprompt_parts+=("%F{$git_color}"'${prompt_pure_vcs_info[branch]}'"%F{$git_dirty_color}"'${prompt_pure_git_dirty}%f')
+		preprompt_parts+=("%F{$git_color}"'${prompt_pure_vcs_info[branch]}'"%F{$git_dirty_color}"'$prompt_pure_vcs_info[staged]${prompt_pure_git_dirty}%f')
 	fi
 	# Git action (for example, merge).
 	if [[ -n $prompt_pure_vcs_info[action] ]]; then
@@ -276,11 +276,14 @@ prompt_pure_async_vcs_info() {
 	# to be used or configured as the user pleases.
 	zstyle ':vcs_info:*' enable git
 	zstyle ':vcs_info:*' use-simple true
+	# Check .git/ metadata for staged changes and initialize stagedstr (%c)
+	zstyle ':vcs_info:*' check-for-staged-changes true
+	zstyle ':vcs_info:*' stagedstr '+'
 	# Only export four message variables from `vcs_info`.
-	zstyle ':vcs_info:*' max-exports 3
+	zstyle ':vcs_info:*' max-exports 4
 	# Export branch (%b), Git toplevel (%R), action (rebase/cherry-pick) (%a)
-	zstyle ':vcs_info:git*' formats '%b' '%R' '%a'
-	zstyle ':vcs_info:git*' actionformats '%b' '%R' '%a'
+	zstyle ':vcs_info:git*' formats '%b' '%R' '%a' '%c'
+	zstyle ':vcs_info:git*' actionformats '%b' '%R' '%a' '%c'
 
 	vcs_info
 
@@ -289,6 +292,7 @@ prompt_pure_async_vcs_info() {
 	info[branch]=${vcs_info_msg_0_//\%/%%}
 	info[top]=$vcs_info_msg_1_
 	info[action]=$vcs_info_msg_2_
+	info[staged]=$vcs_info_msg_3_
 
 	# Append tracked remote branch if exists
 	if [[ -n $info[top] ]]; then
@@ -570,6 +574,7 @@ prompt_pure_async_callback() {
 			prompt_pure_vcs_info[branch]=$info[branch]
 			prompt_pure_vcs_info[top]=$info[top]
 			prompt_pure_vcs_info[action]=$info[action]
+			prompt_pure_vcs_info[staged]=$info[staged]
 
 			do_render=1
 			;;
